@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f6f4ef">
+  <title>타자, 마음을 두드리다</title>
+  <style>
+    :root { --paper:#f6f4ef; --ink:#202422; --muted:#7c827d; --line:#d9ddd6; --lime:#d8f36a; --blue:#bedcf5; --coral:#f7b3a0; --card:#fffefa; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:Georgia, 'Times New Roman', serif; }
+    button, input { font:inherit; }
+    button { cursor:pointer; }
+    .shell { width:min(1120px, calc(100% - 40px)); margin:auto; }
+    header { display:flex; justify-content:space-between; align-items:center; padding:25px 0; border-bottom:1px solid var(--line); }
+    .brand { font:700 19px/1.1 Georgia, serif; letter-spacing:-.5px; }
+    .brand span { display:block; font:11px/1.4 Arial, sans-serif; color:var(--muted); letter-spacing:1.7px; text-transform:uppercase; margin-top:4px; }
+    .reset { border:0; background:none; color:var(--muted); font:12px Arial, sans-serif; padding:8px 0; }
+    .reset:hover { color:var(--ink); }
+    main { min-height:calc(100vh - 95px); }
+    .view { padding:66px 0 80px; animation:appear .55s ease both; }
+    @keyframes appear { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+    .eyebrow { font:11px Arial,sans-serif; letter-spacing:2.4px; color:#687169; text-transform:uppercase; margin:0 0 17px; }
+    h1 { max-width:680px; font-size:clamp(42px, 7vw, 82px); font-weight:400; line-height:.98; letter-spacing:-4px; margin:0 0 25px; }
+    h1 em { color:#6d8a27; font-style:normal; }
+    .lede { max-width:460px; font-size:18px; line-height:1.65; color:#656b65; margin:0; }
+    .topic-grid { display:grid; grid-template-columns:repeat(5, 1fr); gap:10px; margin:54px 0 28px; }
+    .topic { min-height:154px; text-align:left; padding:18px; border:1px solid var(--line); background:var(--card); color:var(--ink); transition:.2s ease; }
+    .topic:nth-child(2) { background:var(--blue); } .topic:nth-child(3) { background:var(--coral); } .topic:nth-child(4) { background:#e9d6f3; } .topic:nth-child(5) { background:#f3df91; }
+    .topic:hover { transform:translateY(-4px); box-shadow:5px 5px 0 rgba(32,36,34,.1); }
+    .topic.selected { outline:2px solid var(--ink); outline-offset:-6px; }
+    .topic .mark { display:block; width:23px; height:23px; border:1px solid var(--ink); border-radius:50%; margin-bottom:35px; position:relative; }
+    .topic.selected .mark:after { content:''; position:absolute; inset:5px; background:var(--ink); border-radius:50%; }
+    .topic strong { display:block; font-size:23px; font-weight:400; margin-bottom:4px; }
+    .topic small { font:11px Arial,sans-serif; opacity:.65; }
+    .action-row { display:flex; justify-content:space-between; align-items:center; gap:15px; }
+    .hint { color:var(--muted); font:12px Arial,sans-serif; }
+    .primary { border:1px solid var(--ink); padding:14px 22px; background:var(--ink); color:white; font:700 13px Arial,sans-serif; }
+    .primary:disabled { opacity:.3; cursor:not-allowed; }
+    .practice-top { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:48px; }
+    .practice-top h2 { font-size:43px; font-weight:400; letter-spacing:-2px; margin:0; }
+    .counter { text-align:right; color:var(--muted); font:12px Arial,sans-serif; }
+    .counter b { display:block; color:var(--ink); font:400 32px Georgia,serif; }
+    .progress { height:3px; background:var(--line); margin-bottom:49px; }
+    .progress i { display:block; height:100%; background:var(--ink); transition:width .3s ease; }
+    .sentence-card { border-top:1px solid var(--ink); padding:33px 0 37px; }
+    .sentence-label { display:flex; justify-content:space-between; color:var(--muted); font:11px Arial,sans-serif; letter-spacing:1px; text-transform:uppercase; margin-bottom:25px; }
+    .sentence { min-height:112px; font-size:clamp(27px, 4vw, 48px); line-height:1.35; letter-spacing:-1.6px; }
+    .sentence .typed { color:var(--ink); } .sentence .pending { color:#c5c9c3; } .sentence .wrong { color:#d96f58; text-decoration:underline; text-decoration-thickness:2px; }
+    .type-input { width:100%; border:0; border-bottom:2px solid var(--ink); background:transparent; padding:13px 0; outline:0; color:transparent; caret-color:var(--ink); font-size:22px; }
+    .type-input::selection { background:var(--lime); }
+    .stats { display:flex; gap:34px; align-items:center; padding-top:25px; border-top:1px solid var(--line); font:12px Arial,sans-serif; color:var(--muted); }
+    .stats b { color:var(--ink); font-size:18px; font-weight:400; margin-right:5px; }
+    .next { margin-left:auto; border:0; background:var(--lime); color:var(--ink); padding:13px 17px; font:700 12px Arial,sans-serif; }
+    .done { text-align:center; padding-top:100px; } .done h1 { margin:0 auto 22px; } .done p { color:var(--muted); font-size:18px; }
+    .done .primary { margin-top:22px; }
+    @media (max-width:720px) { .shell { width:min(100% - 28px, 560px); } header { padding:18px 0; } .view { padding:43px 0 55px; } h1 { letter-spacing:-2.5px; } .topic-grid { grid-template-columns:repeat(2, 1fr); margin-top:35px; } .topic:last-child { grid-column:span 2; min-height:120px; } .topic .mark { margin-bottom:23px; } .action-row { align-items:flex-start; flex-direction:column-reverse; } .primary { width:100%; } .practice-top h2 { font-size:35px; } .sentence { min-height:155px; } .stats { gap:14px; flex-wrap:wrap; } .next { width:100%; margin-left:0; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header><div class="brand">타자, 마음을 두드리다<span>typing with feeling</span></div><button class="reset" id="reset">주제 다시 고르기</button></header>
+    <main id="app"></main>
+  </div>
+  <script>
+    const topics = {
+      love: { name:'사랑', sub:'다정한 마음', color:'', lines:['사랑은 대단한 약속보다 매일 건네는 작은 안부에 가깝다.','좋아한다는 말은 오래 바라본 사람의 눈빛에서 먼저 시작된다.','함께 걷는 속도를 맞추는 일도 사랑의 한 문장이다.','마음이 머무는 곳에는 언제나 따뜻한 빛이 남는다.','네가 좋아하는 것을 기억하는 것은 조용한 사랑의 방식이다.','사랑은 서로의 다름을 지우지 않고 곁에 두는 연습이다','오늘의 평범한 순간이 언젠가 가장 그리운 장면이 된다.','고마워라는 말은 사랑을 가장 단단하게 만드는 짧은 문장이다'] },
+      sadness: { name:'슬픔', sub:'느린 마음', lines:['슬픔은 지나간 자리마다 조금 더 깊은 나를 남긴다.','울고 싶은 날에는 이유를 찾지 않아도 괜찮다.','비가 내리면 마음속 소리도 잠시 작아진다.','괜찮지 않다는 고백이 때로는 회복의 첫걸음이다.','그리움은 기억이 아직 따뜻하다는 뜻인지도 모른다.','어두운 밤에도 창문 밖에는 아침을 준비하는 빛이 있다.','마음이 무거운 날에는 한 걸음만 걸어도 충분하다.','떠난 것은 사라진 것이 아니라 다른 곳에 머무는 것이다'] },
+      courage: { name:'용기', sub:'한 걸음의 마음', lines:['용기는 두렵지 않은 것이 아니라 두려워도 움직이는 힘이다.','작은 시작은 멀리 있는 꿈과 오늘을 이어 준다.','넘어졌다는 사실보다 다시 일어선 방향이 중요하다.','아직 늦지 않았다는 말을 스스로에게 건네 보자.','완벽하지 않아도 첫 문장은 쓸 수 있다.','마음이 떨릴수록 내가 진짜 원하는 것이 보인다.','한 번의 실패는 다음 시도를 위한 지도가 된다.','천천히 가도 멈추지 않으면 결국 앞으로 나아간다'] },
+      calm: { name:'평온', sub:'고요한 마음', lines:['아침의 빛은 서두르지 않고 방 안으로 천천히 들어온다.','깊게 숨을 쉬면 지금 이 순간이 조금 선명해진다.','따뜻한 차 한 잔에도 하루를 돌보는 마음이 담긴다.','고요함은 아무것도 없는 상태가 아니라 나를 듣는 시간이다.','바람이 지나간 자리에는 나뭇잎의 작은 인사가 남는다.','오늘 할 수 있는 일 하나에 마음을 온전히 놓아 보자.','느린 걸음은 주변의 아름다움을 발견하게 한다.','잠시 멈추는 것은 길을 포기하는 일이 아니다'] },
+      hope: { name:'희망', sub:'내일을 보는 마음', lines:['작은 빛 하나가 긴 밤의 방향을 알려 준다.','내일은 아직 쓰이지 않은 문장이라서 더 아름답다.','좋은 날은 갑자기 오기보다 조금씩 가까워진다.','씨앗은 보이지 않는 곳에서도 계절을 믿고 자란다.','오늘의 노력이 언젠가 다정한 결과로 돌아온다.','구름 뒤에 있는 하늘은 흐린 날에도 여전히 푸르다.','다시 시작할 수 있다는 사실은 언제나 우리 곁에 있다.','기대하는 마음은 삶을 앞으로 기울게 하는 힘이다'] }
+    };
+    const app = document.querySelector('#app');
+    const keys = Object.keys(topics);
+    let selected = JSON.parse(localStorage.getItem('taja-topics') || '[]');
+    let sentences = [], index = 0, typed = '', started = 0, correct = 0, errors = 0;
+    function renderSelect() {
+      app.innerHTML = `<section class="view"><p class="eyebrow">01 / 마음의 방향</p><h1>오늘, 어떤 마음을<br><em>두드려 볼까요?</em></h1><p class="lede">연습하고 싶은 감정 다섯 가지를 고르면<br>그 마음을 담은 문장으로 타자를 연습합니다.</p><div class="topic-grid">${keys.map(key => `<button class="topic ${selected.includes(key) ? 'selected':''}" data-key="${key}"><span class="mark"></span><strong>${topics[key].name}</strong><small>${topics[key].sub}</small></button>`).join('')}</div><div class="action-row"><span class="hint">${selected.length}/5 선택됨 · 다섯 가지를 모두 골라 주세요</span><button class="primary" id="start" ${selected.length !== 5 ? 'disabled':''}>연습 시작하기 →</button></div></section>`;
+      document.querySelectorAll('.topic').forEach(button => button.onclick = () => { const key=button.dataset.key; selected=selected.includes(key) ? selected.filter(item=>item!==key) : selected.length<5 ? [...selected,key] : selected; renderSelect(); });
+      document.querySelector('#start').onclick = start;
+    }
+    function buildSentences() { sentences = selected.flatMap(key => topics[key].lines.flatMap((line, i) => { const clean=line.replace(/[.。]$/, ''); return [line, clean + (i % 2 ? ' 오늘도.' : ' 그리고 내일로 이어진다.'), clean + ' 그 마음을 오래 바라본다.', clean + ' 천천히 기억해 둔다.', clean + ' 오늘의 나에게 건넨다.']; })).sort(() => Math.random()-.5); }
+    function start() { localStorage.setItem('taja-topics', JSON.stringify(selected)); buildSentences(); index=0; typed=''; started=0; correct=0; errors=0; renderPractice(); }
+    function renderPractice() {
+      const sentence=sentences[index]; const pct=Math.round(index/sentences.length*100); const chars=sentence.split('').map((char,i) => `<span class="${i<typed.length ? (typed[i]===char?'typed':'wrong') : 'pending'}">${char===' ' ? '&nbsp;' : char}</span>`).join('');
+      app.innerHTML=`<section class="view"><div class="practice-top"><div><p class="eyebrow">02 / ${topics[selected[0]].name} 외 ${selected.length-1}가지</p><h2>마음의 문장</h2></div><div class="counter"><b>${String(index+1).padStart(2,'0')}</b> / ${sentences.length}</div></div><div class="progress"><i style="width:${pct}%"></i></div><div class="sentence-card"><div class="sentence-label"><span>type the feeling</span><span>${Math.min(100, Math.round(correct/Math.max(1, typed.length)*100))}% 정확도</span></div><div class="sentence">${chars}</div><input class="type-input" id="input" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="문장 입력"><div class="stats"><span><b>${correct}</b>정확</span><span><b>${errors}</b>오타</span><span><b>${started ? Math.max(1, Math.round((Date.now()-started)/60000*typed.length)) : 0}</b>타/분</span><button class="next" id="next">다음 문장 ↗</button></div></div></section>`;
+      const input=document.querySelector('#input'); input.value=typed; input.focus(); input.oninput=event => { if(!started) started=Date.now(); typed=event.target.value.slice(0,sentence.length); correct=[...typed].filter((char,i)=>char===sentence[i]).length; errors=typed.length-correct; renderPractice(); }; input.onkeydown=event => { if(event.key==='Enter' && typed===sentence) next(); }; document.querySelector('#next').onclick=next;
+    }
+    function next() { if(index+1>=sentences.length) { renderDone(); return; } index++; typed=''; renderPractice(); }
+    function renderDone() { app.innerHTML=`<section class="view done"><p class="eyebrow">03 / 오늘의 기록</p><h1>마음이 한 바퀴<br><em>다정해졌어요.</em></h1><p>${sentences.length}개의 문장을 완주했습니다.</p><button class="primary" id="again">다시 연습하기 →</button></section>`; document.querySelector('#again').onclick=start; }
+    document.querySelector('#reset').onclick=()=>{ localStorage.removeItem('taja-topics'); selected=[]; renderSelect(); };
+    selected.length===5 ? start() : renderSelect();
+  </script>
+</body>
+</html>
